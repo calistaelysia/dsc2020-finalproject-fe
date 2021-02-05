@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="asset/css/style.css">
+    <title>Data Provinsi | COVID Tracker</title>
+</head>
+<body>
+    <div id="pageContent">
+        <div class="hdrTop">
+            <div>LAYANAN DARURAT COVID-19 <a class="tab"><img style="height: 10px; width: 8px;" src="asset/gambar/call4.png"> 0811 1211 2112</a></div>
+        </div>
+        <nav class="navbar">
+            <div><h1>COVID-19</h1></div>
+            <div>
+                <ul>
+                    <li><a href="home.html">Beranda</a></li>
+                    <li><a class="openMenu" href="#">Data Provinsi</a></li>
+                </ul>
+            </div>
+        </nav>
+        <div class="container">
+            <div class="tagContainer">
+                <p class="tagP2">DATA PROVINSI</p>
+            </div>
+            <div class="provinsiContainer">
+                <div id="searchWrapper">
+                    <div class="searchBox">
+                        <input type="text" name="searchBar" id="searchBar" placeholder="cari nama provinsi">
+                        <img src="asset/gambar/search1.png" alt="">
+                    </div>
+                </div>
+                <div id="loader"></div>
+                <div class="provContainer" id="provContnr">
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+    <footer>
+        <p>
+            <strong>Satuan Tugas Penanganan COVID-19</strong> - &copy;Copyright 2020. All Rights Reserved.
+        </p>
+    </footer>
+</body>
+</html>
+<script>
+    const loader = document.getElementById('loader');
+    const dataList = document.getElementById('provContnr');
+    const searchBar = document.getElementById('searchBar');
+    var datas = [];
+    console.log(searchBar);
+
+    searchBar.addEventListener('keyup', (e) => {
+        loader.style.display = "block";
+        dataList.style.display = "none";
+        const searchString = e.target.value.toLowerCase();
+        console.log(searchString);
+        const filteredDatas = datas.filter((data) => {
+            return data.provinsi.toLowerCase().includes(searchString);
+        });
+        displaySearchDatas(filteredDatas);
+        loader.style.display = "none";
+    });
+    const displaySearchDatas = (datas) => {
+        const htmlString = datas.map((data, index) =>  {
+            dataList.style.display = "grid";
+            return `
+            <div class="provinsiBox">
+                <div class="titleWrapper">
+                    <div class="titlePart provNo">#${data.index}</div>
+                    <div class="titlePart" id="namaProvinsi1">${data.provinsi}</div>
+                </div>
+                <div class="dataRow">
+                    <p class="provAngka" id="provinsiPositif1">${data.kasusPosi}</p>
+                    <p class="provKeterangan">Positif</p>
+                </div>
+                <hr>
+                <div class="dataRow">
+                    <p class="provAngka" id="provinsiSembuh1">${data.kasusSemb}</p>
+                    <p class="provKeterangan">Sembuh</p>
+                </div>
+                <hr>
+                <div class="dataRow">
+                    <p class="provAngka" id="provinsiMeninggal1">${data.kasusMeni}</p>
+                    <p class="provKeterangan">Meninggal</p>
+                </div>
+            </div>
+            `;
+        }).join('');
+        dataList.innerHTML = htmlString;
+    }
+    const getDataFetchAsync = async () => {
+        try{
+            const res = await fetch('https://indonesia-covid-19.mathdro.id/api/provinsi',{
+                method: 'get'
+            })
+            var resJSON = await res.json();
+            datas = resJSON.data;
+            displayGetDatas(datas);
+            loader.style.display = "none";
+            console.log(datas);
+        }catch(err){
+            console.log(err);
+        }
+    };
+    const displayGetDatas = (datas) => {
+        const htmlString = datas.map((data, index) =>  {
+            dataList.style.display = "grid";
+            data.index = index+1;
+            return `
+            <div class="provinsiBox">
+                <div class="titleWrapper">
+                    <div class="titlePart provNo">#${index+1}</div>
+                    <div class="titlePart" id="namaProvinsi1">${data.provinsi}</div>
+                </div>
+                <div class="dataRow">
+                    <p class="provAngka" id="provinsiPositif1">${data.kasusPosi}</p>
+                    <p class="provKeterangan">Positif</p>
+                </div>
+                <hr>
+                <div class="dataRow">
+                    <p class="provAngka" id="provinsiSembuh1">${data.kasusSemb}</p>
+                    <p class="provKeterangan">Sembuh</p>
+                </div>
+                <hr>
+                <div class="dataRow">
+                    <p class="provAngka" id="provinsiMeninggal1">${data.kasusMeni}</p>
+                    <p class="provKeterangan">Meninggal</p>
+                </div>
+            </div>
+            `;
+        }).join('');
+        dataList.innerHTML = htmlString;
+    }
+    getDataFetchAsync();
+
+</script>

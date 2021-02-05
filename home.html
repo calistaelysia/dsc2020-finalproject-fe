@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="asset/css/style.css">
+    <title>Beranda | COVID-19 Tracker</title>
+</head>
+<body>
+    <div id="pageContent">
+        <div class="hdrTop">
+            <div>LAYANAN DARURAT COVID-19 <a class="tab"><img style="height: 10px; width: 8px;" src="asset/gambar/call4.png"> 0811 1211 2112</a></div>
+        </div>
+        <nav class="navbar">
+            <div><h1>COVID-19</h1></div>
+            <div>
+                <ul>
+                    <li><a class="openMenu" href="#">Beranda</a></li>
+                    <li><a href="province.html">Data Provinsi</a></li>
+                </ul>
+            </div>
+        </nav>
+        <div class="container">
+            <div class="tagContainer">
+                <p class="tagP1">Wujudkan Indonesia Sehat, Aman, dan Produktif</p>
+                <p class="tagP2">INDONESIA TANGGAP COVID-19</p>
+            </div>
+            <div id="loader"></div>
+            <div class="dataContainer" id="dataContnr">
+                
+            </div>
+        </div>
+    </div>
+    <footer>
+        <p>
+            <strong>Satuan Tugas Penanganan COVID-19</strong> - &copy;Copyright 2020. All Rights Reserved.
+        </p>
+    </footer>
+</body>
+</html>
+<script>
+    const loader = document.getElementById('loader');
+    const dataList = document.getElementById('dataContnr');
+
+    function getDataFetch(){
+        fetch('https://covid19.mathdro.id/api/countries/IDN',{
+            method:'get'
+        }).then((res)=>{
+            if(res.ok = true){
+                return res.json();
+            }else{
+                return Promise.reject({
+                    "status": res.status,
+                    "statusText": res.statusText
+                })
+            }
+        }).then((data)=>{
+            const displayTotalDatas = (data) => {
+                const positive = data.confirmed.value;
+                const recovered = data.recovered.value;
+                const death = data.deaths.value;
+                const total = positive+recovered+death;
+                return `
+                <div>
+                    <div class="dataBox total">
+                        <div>
+                            <p class="angka" id="angkaTotalKasus">${total}</p>
+                            <p class="keterangan">TOTAL KASUS</p>
+                        </div>
+                    </div>
+                    <div class="dataBox positif">
+                        <div>
+                            <p class="angka" id="angkaPositif">${positive}</p>
+                            <p class="keterangan">POSITIF</p>
+                        </div>
+                    </div>
+                    <div class="dataBox sembuh">
+                        <div>
+                            <p class="angka" id="angkaSembuh">${recovered}</p>
+                            <p class="keterangan">SEMBUH</p>
+                        </div>
+                    </div>
+                    <div class="dataBox meninggal">
+                        <div>
+                            <p class="angka" id="angkaMeninggal">${death}</p>
+                            <p class="keterangan">MENINGGAL</p>
+                        </div>
+                    </div>
+                </div>
+                `;
+            }
+            dataList.innerHTML = displayTotalDatas(data);
+            loader.style.display = "none";
+        }).catch((error)=>{
+            console.log("ERROR: " + JSON.stringify(error));
+        })
+    }
+    getDataFetch();
+</script>
