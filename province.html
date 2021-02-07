@@ -9,7 +9,8 @@
 <body>
     <div id="pageContent">
         <div class="hdrTop">
-            <div>LAYANAN DARURAT COVID-19 <a class="tab"><img style="height: 10px; width: 8px;" src="asset/gambar/call4.png"> 0811 1211 2112</a></div>
+            <div>LAYANAN DARURAT COVID-19 </div>
+            <div><a class="tab"><img style="height: 10px; width: 8px;" src="asset/gambar/call4.png"> 0811 1211 2112</a></div>
         </div>
         <nav class="navbar">
             <div><h1>COVID-19</h1></div>
@@ -64,32 +65,42 @@
         loader.style.display = "none";
     });
     const displaySearchDatas = (datas) => {
-        const htmlString = datas.map((data, index) =>  {
-            dataList.style.display = "grid";
-            return `
-            <div class="provinsiBox">
-                <div class="titleWrapper">
-                    <div class="titlePart provNo">#${data.index}</div>
-                    <div class="titlePart" id="namaProvinsi1">${data.provinsi}</div>
+        if (datas.length != 0){
+            const htmlString = datas.map((data, index) =>  {
+                dataList.style.display = "grid";
+                return `
+                <div class="provinsiBox">
+                    <div class="titleWrapper">
+                        <div class="titlePart">#${data.index}</div>
+                        <div class="titlePart" id="namaProvinsi1">${data.provinsi}</div>
+                    </div>
+                    <div class="dataRow">
+                        <p class="provAngka" id="provinsiPositif1">${data.kasusPosi}</p>
+                        <p class="provKeterangan">Positif</p>
+                    </div>
+                    <hr>
+                    <div class="dataRow">
+                        <p class="provAngka" id="provinsiSembuh1">${data.kasusSemb}</p>
+                        <p class="provKeterangan">Sembuh</p>
+                    </div>
+                    <hr>
+                    <div class="dataRow">
+                        <p class="provAngka" id="provinsiMeninggal1">${data.kasusMeni}</p>
+                        <p class="provKeterangan">Meninggal</p>
+                    </div>
                 </div>
-                <div class="dataRow">
-                    <p class="provAngka" id="provinsiPositif1">${data.kasusPosi}</p>
-                    <p class="provKeterangan">Positif</p>
-                </div>
-                <hr>
-                <div class="dataRow">
-                    <p class="provAngka" id="provinsiSembuh1">${data.kasusSemb}</p>
-                    <p class="provKeterangan">Sembuh</p>
-                </div>
-                <hr>
-                <div class="dataRow">
-                    <p class="provAngka" id="provinsiMeninggal1">${data.kasusMeni}</p>
-                    <p class="provKeterangan">Meninggal</p>
-                </div>
-            </div>
+                `;
+            }).join('');
+            dataList.innerHTML = htmlString;
+        }
+        else{
+            dataList.style.display = "flex";
+
+            const htmlString = `
+                <div class="notFound">No Result Found</div>
             `;
-        }).join('');
-        dataList.innerHTML = htmlString;
+            dataList.innerHTML = htmlString;
+        }
     }
     const getDataFetchAsync = async () => {
         try{
@@ -109,28 +120,30 @@
         const htmlString = datas.map((data, index) =>  {
             dataList.style.display = "grid";
             data.index = index+1;
-            return `
-            <div class="provinsiBox">
-                <div class="titleWrapper">
-                    <div class="titlePart provNo">#${index+1}</div>
-                    <div class="titlePart" id="namaProvinsi1">${data.provinsi}</div>
+            if(data.provinsi != "Indonesia"){
+                return `
+                <div class="provinsiBox">
+                    <div class="titleWrapper">
+                        <div class="titlePart provNo">#${index+1}</div>
+                        <div class="titlePart" id="namaProvinsi1">${data.provinsi}</div>
+                    </div>
+                    <div class="dataRow">
+                        <p class="provAngka" id="provinsiPositif1">${data.kasusPosi}</p>
+                        <p class="provKeterangan">Positif</p>
+                    </div>
+                    <hr>
+                    <div class="dataRow">
+                        <p class="provAngka" id="provinsiSembuh1">${data.kasusSemb}</p>
+                        <p class="provKeterangan">Sembuh</p>
+                    </div>
+                    <hr>
+                    <div class="dataRow">
+                        <p class="provAngka" id="provinsiMeninggal1">${data.kasusMeni}</p>
+                        <p class="provKeterangan">Meninggal</p>
+                    </div>
                 </div>
-                <div class="dataRow">
-                    <p class="provAngka" id="provinsiPositif1">${data.kasusPosi}</p>
-                    <p class="provKeterangan">Positif</p>
-                </div>
-                <hr>
-                <div class="dataRow">
-                    <p class="provAngka" id="provinsiSembuh1">${data.kasusSemb}</p>
-                    <p class="provKeterangan">Sembuh</p>
-                </div>
-                <hr>
-                <div class="dataRow">
-                    <p class="provAngka" id="provinsiMeninggal1">${data.kasusMeni}</p>
-                    <p class="provKeterangan">Meninggal</p>
-                </div>
-            </div>
-            `;
+                `
+            };
         }).join('');
         dataList.innerHTML = htmlString;
     }
