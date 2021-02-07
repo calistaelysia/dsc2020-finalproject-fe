@@ -68,28 +68,30 @@
         if (datas.length != 0){
             const htmlString = datas.map((data, index) =>  {
                 dataList.style.display = "grid";
-                return `
-                <div class="provinsiBox">
-                    <div class="titleWrapper">
-                        <div class="titlePart">#${data.index}</div>
-                        <div class="titlePart" id="namaProvinsi1">${data.provinsi}</div>
+                if(data.provinsi != "Indonesia"){
+                    return `
+                    <div class="provinsiBox">
+                        <div class="titleWrapper">
+                            <div class="titlePart">#${data.index}</div>
+                            <div class="titlePart" id="namaProvinsi1">${data.provinsi}</div>
+                        </div>
+                        <div class="dataRow">
+                            <p class="provAngka" id="provinsiPositif1">${data.kasusPosi}</p>
+                            <p class="provKeterangan">Positif</p>
+                        </div>
+                        <hr>
+                        <div class="dataRow">
+                            <p class="provAngka" id="provinsiSembuh1">${data.kasusSemb}</p>
+                            <p class="provKeterangan">Sembuh</p>
+                        </div>
+                        <hr>
+                        <div class="dataRow">
+                            <p class="provAngka" id="provinsiMeninggal1">${data.kasusMeni}</p>
+                            <p class="provKeterangan">Meninggal</p>
+                        </div>
                     </div>
-                    <div class="dataRow">
-                        <p class="provAngka" id="provinsiPositif1">${data.kasusPosi}</p>
-                        <p class="provKeterangan">Positif</p>
-                    </div>
-                    <hr>
-                    <div class="dataRow">
-                        <p class="provAngka" id="provinsiSembuh1">${data.kasusSemb}</p>
-                        <p class="provKeterangan">Sembuh</p>
-                    </div>
-                    <hr>
-                    <div class="dataRow">
-                        <p class="provAngka" id="provinsiMeninggal1">${data.kasusMeni}</p>
-                        <p class="provKeterangan">Meninggal</p>
-                    </div>
-                </div>
-                `;
+                    `
+                };
             }).join('');
             dataList.innerHTML = htmlString;
         }
