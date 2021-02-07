@@ -33,6 +33,7 @@
                     </div>
                 </div>
                 <div id="loader"></div>
+                <div id="notFound">No Result Found</div>
                 <div class="provContainer" id="provContnr">
                     
                 </div>
@@ -50,84 +51,32 @@
     const loader = document.getElementById('loader');
     const dataList = document.getElementById('provContnr');
     const searchBar = document.getElementById('searchBar');
+    const notFound = document.getElementById('notFound');
     var datas = [];
     console.log(searchBar);
 
     searchBar.addEventListener('keyup', (e) => {
         loader.style.display = "block";
         dataList.style.display = "none";
+        notFound.style.display = "none";
         const searchString = e.target.value.toLowerCase();
         console.log(searchString);
         const filteredDatas = datas.filter((data) => {
             return data.provinsi.toLowerCase().includes(searchString);
         });
         displaySearchDatas(filteredDatas);
+        console.log("displaySearchDatas Success");
         loader.style.display = "none";
     });
-    const displaySearchDatas = (datas) => {
-        if (datas.length != 0){
-            const htmlString = datas.map((data, index) =>  {
-                dataList.style.display = "grid";
-                if(data.provinsi != "Indonesia"){
-                    return `
-                    <div class="provinsiBox">
-                        <div class="titleWrapper">
-                            <div class="titlePart">#${data.index}</div>
-                            <div class="titlePart" id="namaProvinsi1">${data.provinsi}</div>
-                        </div>
-                        <div class="dataRow">
-                            <p class="provAngka" id="provinsiPositif1">${data.kasusPosi}</p>
-                            <p class="provKeterangan">Positif</p>
-                        </div>
-                        <hr>
-                        <div class="dataRow">
-                            <p class="provAngka" id="provinsiSembuh1">${data.kasusSemb}</p>
-                            <p class="provKeterangan">Sembuh</p>
-                        </div>
-                        <hr>
-                        <div class="dataRow">
-                            <p class="provAngka" id="provinsiMeninggal1">${data.kasusMeni}</p>
-                            <p class="provKeterangan">Meninggal</p>
-                        </div>
-                    </div>
-                    `
-                };
-            }).join('');
-            dataList.innerHTML = htmlString;
-        }
-        else{
-            dataList.style.display = "flex";
-
-            const htmlString = `
-                <div class="notFound">No Result Found</div>
-            `;
-            dataList.innerHTML = htmlString;
-        }
-    }
-    const getDataFetchAsync = async () => {
-        try{
-            const res = await fetch('https://indonesia-covid-19.mathdro.id/api/provinsi',{
-                method: 'get'
-            })
-            var resJSON = await res.json();
-            datas = resJSON.data;
-            displayGetDatas(datas);
-            loader.style.display = "none";
-            console.log(datas);
-        }catch(err){
-            console.log(err);
-        }
-    };
-    const displayGetDatas = (datas) => {
-        const htmlString = datas.map((data, index) =>  {
+    const displaySearchDatas = (filteredDatas) => {
+        if (filteredDatas.length != 0){
             dataList.style.display = "grid";
-            data.index = index+1;
-            if(data.provinsi != "Indonesia"){
+            const htmlString = filteredDatas.map((data, index) =>  {
                 return `
                 <div class="provinsiBox">
                     <div class="titleWrapper">
-                        <div class="titlePart provNo">#${index+1}</div>
-                        <div class="titlePart" id="namaProvinsi1">${data.provinsi}</div>
+                        <div class="titlePart">#${data.index}</div>
+                    <div class="titlePart" id="namaProvinsi1">${data.provinsi}</div>
                     </div>
                     <div class="dataRow">
                         <p class="provAngka" id="provinsiPositif1">${data.kasusPosi}</p>
@@ -145,7 +94,57 @@
                     </div>
                 </div>
                 `
-            };
+                ;
+            }).join('');
+            dataList.innerHTML = htmlString;
+        }
+        else{
+            console.log("search tidak null & filetered data kosong")
+            notFound.style.display = "block";
+        }
+    }
+    const getDataFetchAsync = async () => {
+        try{
+            const res = await fetch('https://indonesia-covid-19.mathdro.id/api/provinsi',{
+                method: 'get'
+            })
+            var resJSON = await res.json();
+            datas = resJSON.data;
+            datas.pop();
+            displayGetDatas(datas);
+            console.log("displayGetDatas Success");
+            loader.style.display = "none";
+            console.log(datas);
+        }catch(err){
+            console.log(err);
+        }
+    };
+    const displayGetDatas = (datas) => {
+        const htmlString = datas.map((data, index) =>  {
+            dataList.style.display = "grid";
+            data.index = index+1;
+            return `
+            <div class="provinsiBox">
+                <div class="titleWrapper">
+                    <div class="titlePart provNo">#${index+1}</div>
+                    <div class="titlePart" id="namaProvinsi1">${data.provinsi}</div>
+                </div>
+                <div class="dataRow">
+                    <p class="provAngka" id="provinsiPositif1">${data.kasusPosi}</p>
+                    <p class="provKeterangan">Positif</p>
+                </div>
+                <hr>
+                <div class="dataRow">
+                    <p class="provAngka" id="provinsiSembuh1">${data.kasusSemb}</p>
+                    <p class="provKeterangan">Sembuh</p>
+                </div>
+                <hr>
+                <div class="dataRow">
+                    <p class="provAngka" id="provinsiMeninggal1">${data.kasusMeni}</p>
+                    <p class="provKeterangan">Meninggal</p>
+                </div>
+            </div>
+            `;
         }).join('');
         dataList.innerHTML = htmlString;
     }
